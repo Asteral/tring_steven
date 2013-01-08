@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tring</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="assets/css/reset.css" />
+        <link rel="stylesheet" type="text/css" href="assets/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="assets/css/treemap.css" />
+
+        <!-- loading all the framework javascript files -->        
+        <script type="text/javascript" src="assets/js/lib/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="assets/js/lib/jquery-treemap.js"></script>
+        <script type="text/javascript" src="assets/js/lib/d3.v3.min.js"></script>
+
+        <!-- PATCHES --> 
+        <script type="text/javascript" src="assets/js/patches/date.js"></script>
+        
+        <!-- tringjs - tring's javascript library files here - will look to compile into a single script -->
+        <script type="text/javascript" src="assets/js/tringjs/tringjs.js"></script>
+        <script type="text/javascript" src="assets/js/tringjs/api.js"></script>
+        <script type="text/javascript" src="assets/js/tringjs/dataformatter.js"></script>
+            
+            <!-- VISULISATION -->
+            <script type="text/javascript" src="assets/js/tringjs/vis/treemap.js"></script>       
+       
+        <script type="text/javascript">
+            function mapper(value)
+            {
+                date = new Date(Date.parse(value.date.replace(/-/g,"/")));
+                return {
+                    "class" : "summary",
+                    "label" : date.getDate() + " - " + date.getDayNameShort(),
+                    "value" : value.reading
+                }
+            }
+
+            function treemap(data)
+            {
+                var formatter = new TRINGJS.DataFormatter(data)
+                var d = formatter.get_merged()
+                // var tm = new TRINGJS.Treemap('div#screen', data, formatter);
+            }
+
+            $(document).ready(function(){
+                TRINGJS.Api.get_raw_day('2011-09-01', treemap)
+            });
+        </script>
+
+        <script type="text/javascript">
+            // $(document).ready(function(){
+            //     var canvas = document.getElementById('myCanvas');
+            //     var context = canvas.getContext('2d');
+            //     var centerX = canvas.width / 2;
+            //     var centerY = canvas.height / 2;
+            //     var radius = 100;
+
+            //     context.beginPath();
+            //     context.arc(centerX, centerY, radius, -Math.PI/2, Math.PI-(Math.PI/2), false);
+            //     context.lineWidth = 4;
+            //     context.strokeStyle = '#003300';
+            //     context.stroke();
+
+            //     var pointX = x + Math.cos(alpha) * r;
+            //     var pointY = y + Math.sin(alpha) * r;
+            // });
+        </script>
+
+    </head>
+    <body>
+        <div id='wrapper'>
+            <div id='screen'></div>
+            <!--<canvas id="myCanvas" width="900px" height="600px"></canvas>-->
+        </div>
+    </body>
+</html>

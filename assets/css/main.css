@@ -1,0 +1,35 @@
+body
+{
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#wrapper 
+{
+	position: relative;
+	margin: auto;
+	width: 900px;
+	height: 600px;
+}
+
+#screen
+{
+	margin-top: 1em;
+	width: 100%;
+	height: 500px;
+	color: #000;
+}
+
+#tag
+{
+	width: 900px;
+	height: 50px;
+	position: relative;
+	margin: auto;
+}
+
+h3
+{
+	font-size: 1.3em;
+	font-weight: bold;
+	margin: 0.25em;
+}
