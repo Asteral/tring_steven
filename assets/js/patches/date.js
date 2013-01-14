@@ -32,3 +32,40 @@ Date.locale = {
         month_names_short: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
     }
 };
+
+/**
+ * Added some utility functions for getting the prev/next days, weeks and months
+ */
+
+Date.prototype.offsetDate = function(dOffset, mOffset, yOffset) {
+    var d = this.getDate() + dOffset;
+    var m = this.getMonth() + mOffset;
+    var y = this.getFullYear() + yOffset;
+    return new Date(y, m, d);
+}
+
+Date.prototype.getPrevDay = function() {
+    return this.offsetDate(-1, 0, 0)
+}
+
+Date.prototype.getNextDay = function() {
+    return this.offsetDate(1, 0, 0)
+}
+
+Date.prototype.getPrevWeek = function() {
+    return this.offsetDate(-7, 0, 0)
+}
+
+Date.prototype.getNextWeek = function() {
+    return this.offsetDate(7, 0, 0)
+}
+
+Date.prototype.getPrevMonth = function() {
+    return this.offsetDate(0, -1, 0)
+}
+
+Date.prototype.getNextMonth = function() {
+    return this.offsetDate(0, 1, 0)
+}
+
+

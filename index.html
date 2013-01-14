@@ -5,11 +5,10 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="assets/css/reset.css" />
         <link rel="stylesheet" type="text/css" href="assets/css/main.css" />
-        <link rel="stylesheet" type="text/css" href="assets/css/treemap.css" />
 
         <!-- loading all the framework javascript files -->        
         <script type="text/javascript" src="assets/js/lib/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="assets/js/lib/jquery-treemap.js"></script>
+        <script type="text/javascript" src="assets/js/lib/jquery-ui-1.9.1.custom.min.js"></script>
         <script type="text/javascript" src="assets/js/lib/d3.v3.min.js"></script>
 
         <!-- PATCHES --> 
@@ -21,55 +20,75 @@
         <script type="text/javascript" src="assets/js/tringjs/dataformatter.js"></script>
             
             <!-- VISULISATION -->
-            <script type="text/javascript" src="assets/js/tringjs/vis/treemap.js"></script>       
+            <script type="text/javascript" src="assets/js/tringjs/vis/treemap.js"></script>
+
+        <!-- AI STUFF -->
+        <script type="text/javascript" src="assets/js/lib/numeric.js"></script>
+        <script type="text/javascript" src="assets/js/tringjs/ai.js"></script>    
        
         <script type="text/javascript">
-            function mapper(value)
-            {
-                date = new Date(Date.parse(value.date.replace(/-/g,"/")));
-                return {
-                    "class" : "summary",
-                    "label" : date.getDate() + " - " + date.getDayNameShort(),
-                    "value" : value.reading
-                }
-            }
+            $(document).ready(function(){
 
-            function treemap(data)
+                var date_str = '2013-09-06'
+                var req_day = new Date(Date.parse(date_str.replace(/-/g,"/")));
+                var prev_day = $.datepicker.formatDate('yy-mm-dd', req_day.getPrevDay())
+
+                TRINGJS.Api.get_raw_days(prev_day, date_str, init)
+
+            });
+
+            function init(data)
             {
                 var formatter = new TRINGJS.DataFormatter(data)
-                var d = formatter.get_merged()
-                // var tm = new TRINGJS.Treemap('div#screen', data, formatter);
+                var merged_readings = formatter.get_merged().readings
+
+                var sorted = merged_readings[0].data.sort(function(a,b){return a.reading - b.reading})
+                var avg = 0
+                for (var i = sorted.length - 1; i >= 0; i--) {
+                    avg += sorted[i].reading
+                };
+                avg /= sorted.length
+                domain_vals = [sorted[0].reading, avg, sorted[sorted.length-1].reading]
+
+                var colour_scale = d3.scale.linear()
+                    .domain(domain_vals)
+                    .range(["#3182BD", "#D9D9D9", "#E6550D"]);
+
+                // - Ai stuff.
+                var learner = new ai.Learner(ai.kernels.exp);
+                learner.trainBasic();
+                learner.setup();
+                learner.validate();
+                
+                for (var i = merged_readings[1].data.length - 1; i >= 0; i--) {
+                    var adjusted_time = merged_readings[1].data[i].time.replace(/30/,"50")
+                    var activity_spread = learner.getValue(adjusted_time, merged_readings[1].data[i].reading, merged_readings[0].data[i].reading);
+                    
+                    var formatted = []
+                    for (var j = 0; j < activity_spread.length; j++) {
+                        if(activity_spread[j] < 0 ) { 
+                            activity_spread[j] = 0.01 
+                        } 
+
+                        formatted.push(
+                            { 
+                                "activity" : ai.info.appFromIndex(j) ,
+                                "reading" : activity_spread[j]
+                            } 
+                        )
+                    }
+                    merged_readings[1].data[i].children = formatted
+                }
+
+                var tm = new TRINGJS.Treemap('div#screen', merged_readings[1], 900, 500, colour_scale)
+                tm.build()
             }
-
-            $(document).ready(function(){
-                TRINGJS.Api.get_raw_day('2011-09-01', treemap)
-            });
-        </script>
-
-        <script type="text/javascript">
-            // $(document).ready(function(){
-            //     var canvas = document.getElementById('myCanvas');
-            //     var context = canvas.getContext('2d');
-            //     var centerX = canvas.width / 2;
-            //     var centerY = canvas.height / 2;
-            //     var radius = 100;
-
-            //     context.beginPath();
-            //     context.arc(centerX, centerY, radius, -Math.PI/2, Math.PI-(Math.PI/2), false);
-            //     context.lineWidth = 4;
-            //     context.strokeStyle = '#003300';
-            //     context.stroke();
-
-            //     var pointX = x + Math.cos(alpha) * r;
-            //     var pointY = y + Math.sin(alpha) * r;
-            // });
         </script>
 
     </head>
     <body>
         <div id='wrapper'>
             <div id='screen'></div>
-            <!--<canvas id="myCanvas" width="900px" height="600px"></canvas>-->
         </div>
     </body>
 </html>
