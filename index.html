@@ -19,8 +19,8 @@
         <script type="text/javascript" src="assets/js/tringjs/api.js"></script>
         <script type="text/javascript" src="assets/js/tringjs/dataformatter.js"></script>
             
-            <!-- VISULISATION -->
-            <script type="text/javascript" src="assets/js/tringjs/vis/treemap.js"></script>
+        <!-- VISULISATION -->
+        <script type="text/javascript" src="assets/js/tringjs/treemap.js"></script>
 
         <!-- AI STUFF -->
         <script type="text/javascript" src="assets/js/lib/numeric.js"></script>
@@ -29,60 +29,25 @@
         <script type="text/javascript">
             $(document).ready(function(){
 
-                var date_str = '2013-09-06'
-                var req_day = new Date(Date.parse(date_str.replace(/-/g,"/")));
-                var prev_day = $.datepicker.formatDate('yy-mm-dd', req_day.getPrevDay())
-
-                TRINGJS.Api.get_raw_days(prev_day, date_str, init)
-
-            });
-
-            function init(data)
-            {
-                var formatter = new TRINGJS.DataFormatter(data)
-                var merged_readings = formatter.get_merged().readings
-
-                var sorted = merged_readings[0].data.sort(function(a,b){return a.reading - b.reading})
-                var avg = 0
-                for (var i = sorted.length - 1; i >= 0; i--) {
-                    avg += sorted[i].reading
-                };
-                avg /= sorted.length
-                domain_vals = [sorted[0].reading, avg, sorted[sorted.length-1].reading]
-
-                var colour_scale = d3.scale.linear()
-                    .domain(domain_vals)
-                    .range(["#3182BD", "#D9D9D9", "#E6550D"]);
-
-                // - Ai stuff.
-                var learner = new ai.Learner(ai.kernels.exp);
-                learner.trainBasic();
-                learner.setup();
-                learner.validate();
-                
-                for (var i = merged_readings[1].data.length - 1; i >= 0; i--) {
-                    var adjusted_time = merged_readings[1].data[i].time.replace(/30/,"50")
-                    var activity_spread = learner.getValue(adjusted_time, merged_readings[1].data[i].reading, merged_readings[0].data[i].reading);
-                    
-                    var formatted = []
-                    for (var j = 0; j < activity_spread.length; j++) {
-                        if(activity_spread[j] < 0 ) { 
-                            activity_spread[j] = 0.01 
-                        } 
-
-                        formatted.push(
-                            { 
-                                "activity" : ai.info.appFromIndex(j) ,
-                                "reading" : activity_spread[j]
-                            } 
-                        )
+                activities = {
+                    time : "1200",
+                    type : "lunch",
+                    kw : 1.13,
+                    data : {
+                        comfort : 0.1,
+                        eating : 0.5,
+                        fun : 0.2,
+                        hygiene : 0.0,
+                        tidying : 0.2,
+                        vampire : 0.0
                     }
-                    merged_readings[1].data[i].children = formatted
                 }
 
-                var tm = new TRINGJS.Treemap('div#screen', merged_readings[1], 900, 500, colour_scale)
-                tm.build()
-            }
+
+                var treemap = initTreemap(activities, 'div#screen');
+                // treemap.destroy();
+            });
+
         </script>
 
     </head>

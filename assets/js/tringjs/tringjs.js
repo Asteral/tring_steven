@@ -8,8 +8,8 @@
 
 var DEBUG = false;
 
-// Declaring TRINGJS namespace and defaults
-var TRINGJS = TRINGJS || { REVISION: '01' };
+// Declaring TRING namespace and defaults
+var TRING = TRING || { REVISION: '01' };
 
 var API_URL = 'http://api.tringlightningbolt.com/api/v1/power/show.json';
 var DEBUG_API_URL = 'http://localhost:3000/api/v1/power/show.json';
@@ -21,4 +21,4 @@ var DEBUG_API_URL = 'http://localhost:3000/api/v1/power/show.json';
  */
 var icp = '0000067894TR-CE6';
 
-TRINGJS.API_URL = (DEBUG == true)? DEBUG_API_URL : API_URL;
+TRING.API_URL = (DEBUG == true)? DEBUG_API_URL : API_URL;

@@ -1,21 +1,21 @@
-TRINGJS.DataFormatter = function(data)
+TRING.DataFormat = function(data)
 {
     this.data = data;
 };
 
-TRINGJS.DataFormatter.READINGS = 'readings';
-TRINGJS.DataFormatter.DAY_SUMMARIES = 'day_summaries';
-TRINGJS.DataFormatter.MONTH_SUMMARIES = 'month_summaries';
+TRING.DataFormat.READINGS = 'readings';
+TRING.DataFormat.DAY_SUMMARIES = 'day_summaries';
+TRING.DataFormat.MONTH_SUMMARIES = 'month_summaries';
 
-TRINGJS.DataFormatter.prototype =  {
-    constructor : TRINGJS.DataFormatter,
+TRING.DataFormat.prototype =  {
+    constructor : TRING.DataFormat,
 
     get_merged : function()
     {
         var data = {};
         merge_types = this.__detect_merge(this.data.meters[0]);
         for (var i = merge_types.length - 1; i >= 0; i--) {
-            var key = TRINGJS.DataFormatter[merge_types[i]];
+            var key = TRING.DataFormat[merge_types[i]];
             data[key] = JSON.parse(JSON.stringify(this.data.meters[0][key]));
             for (var j = this.data.meters.length - 1; j >= 1; j--) {
                 data[key] = this.__merge(data[key], this.data.meters[j][key], key);
@@ -29,13 +29,13 @@ TRINGJS.DataFormatter.prototype =  {
     {
         switch(merge_type)
         {
-            case TRINGJS.DataFormatter.READINGS:
+            case TRING.DataFormat.READINGS:
                 return this.__merge_readings(first, second);
             break;
-            case TRINGJS.DataFormatter.DAY_SUMMARIES:
+            case TRING.DataFormat.DAY_SUMMARIES:
                 return this.__merge_summaries(first, second);
             break;
-            case TRINGJS.DataFormatter.MONTH_SUMMARIES:
+            case TRING.DataFormat.MONTH_SUMMARIES:
                 return this.__merge_summaries(first, second);
             break;
         }

@@ -1,17 +1,17 @@
-TRINGJS.Api = {
+TRING.Api = {
 
     get_meters : function(callback) {
-        url = TRINGJS.API_URL+"?icp="+icp;
+        url = TRING.API_URL+"?icp="+icp;
         this.get_url(url, callback);
     },
 
     get_raw_day : function(date, callback) {
-        url = TRINGJS.API_URL+"?icp="+icp+"&raw_start="+date;
+        url = TRING.API_URL+"?icp="+icp+"&raw_start="+date;
         this.get_url(url, callback);
     },
 
     get_raw_days : function(start, end, callback) {
-        url = TRINGJS.API_URL+"?icp="+icp+"&raw_start="+start+"&raw_end="+end;
+        url = TRING.API_URL+"?icp="+icp+"&raw_start="+start+"&raw_end="+end;
         this.get_url(url, callback);
     },
 
@@ -30,22 +30,22 @@ TRINGJS.Api = {
     },
 
     get_summary_day : function(date, callback) {
-        url = TRINGJS.API_URL+"?icp="+icp+"&day_summary_start="+date;
+        url = TRING.API_URL+"?icp="+icp+"&day_summary_start="+date;
         this.get_url(url, callback);
     },
 
     get_summary_days : function(start, end, callback) {
-        url = TRINGJS.API_URL+"?icp="+icp+"&day_summary_start="+start+"&day_summary_end="+end;
+        url = TRING.API_URL+"?icp="+icp+"&day_summary_start="+start+"&day_summary_end="+end;
         this.get_url(url, callback);
     },
 
     get_summary_month : function(date, callback) {
-        url = TRINGJS.API_URL+"?icp="+icp+"&month_summary_start="+date;
+        url = TRING.API_URL+"?icp="+icp+"&month_summary_start="+date;
         this.get_url(url, callback);
     },
 
     get_summary_months : function(start, end, callback) {
-        url = TRINGJS.API_URL+"?icp="+icp+"&month_summary_start="+start+"&month_summary_end="+end;
+        url = TRING.API_URL+"?icp="+icp+"&month_summary_start="+start+"&month_summary_end="+end;
         this.get_url(url, callback);
     },
 
